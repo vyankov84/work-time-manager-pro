@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from accounts.choices import DepartmentType
-from accounts.validators import validate_email
+from accounts.validators import EmailDomainValidate
 
 
 class EmployeeUser(AbstractUser):
@@ -23,7 +23,7 @@ class EmployeeUser(AbstractUser):
     )
 
     email = models.EmailField(
-        validators=[validate_email],
+        validators=[EmailDomainValidate()],
         unique=True,
     )
 

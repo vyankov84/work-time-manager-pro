@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError
+from django.utils.deconstruct import deconstructible
 
 ALLOWED_DOMAINS = [
     'company.com',
@@ -7,10 +8,17 @@ ALLOWED_DOMAINS = [
     'company.co.uk'
 ]
 
-def validate_email(value):
+@deconstructible
+class EmailDomainValidate:
 
-    if '@' not in value:
-        return
+    def __init__(self, message=None):
+        self.message = message or 'Please use a valid company email domain!'
 
-    if value.split('@')[1] not in ALLOWED_DOMAINS:
-        raise ValidationError('The domain should consist company')
+    def __call__(self, value):
+
+        if '@' not in value:
+            return
+
+        if value.split('@')[1].lower() not in ALLOWED_DOMAINS:
+            raise ValidationError(self.message)
+
