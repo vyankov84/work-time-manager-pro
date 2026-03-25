@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models import Sum
+
 from accounts.models import EmployeeUser
 from clients.models import Client
 from projects.choices import RegionType, ProjectStatus
@@ -71,6 +73,20 @@ class Project(models.Model):
         decimal_places=2,
         default=0
     )
+
+    @property
+    def total_hours_worked(self):
+        data = self.activities.aggregate(
+            total=Sum('hours_worked')
+        )
+        return data['total'] or 0
+
+    @property
+    def progress_percentage(self):
+        if self.estimated_hours > 0:
+            percentages = (self.total_hours_worked / self.estimated_hours) * 100
+            return f'{min(percentages, 100):.2f}'
+        return '0.00%'
 
 
     def clean(self):

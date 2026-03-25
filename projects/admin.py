@@ -5,7 +5,15 @@ from projects.models import Project
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
 
-    list_display = ['name','job_number','region','client', 'project_status', 'project_managers']
+    list_display = [
+        'name',
+        'job_number',
+        'region','client',
+        'project_status',
+        'project_managers',
+        'total_hours_worked',
+        'estimated_hours',
+    ]
 
     search_fields = ['name', 'job_number', 'client__name']
 
