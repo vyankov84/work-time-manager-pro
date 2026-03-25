@@ -74,6 +74,13 @@ class Project(models.Model):
         default=0
     )
 
+    hourly_rate = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0.00,
+        help_text='Price for one hour of work on this project',
+    )
+
     @property
     def total_hours_worked(self):
         data = self.activities.aggregate(
@@ -88,6 +95,9 @@ class Project(models.Model):
             return f'{min(percentages, 100):.2f}'
         return '0.00%'
 
+    @property
+    def total_earned(self):
+        return self.hourly_rate * self.total_hours_worked
 
     def clean(self):
         super().clean()

@@ -10,9 +10,11 @@ class ProjectAdmin(admin.ModelAdmin):
         'job_number',
         'region','client',
         'project_status',
-        'project_managers',
+        'project_manager',
+        'display_team',
         'total_hours_worked',
         'estimated_hours',
+        'hourly_rate'
     ]
 
     search_fields = ['name', 'job_number', 'client__name']
@@ -23,7 +25,7 @@ class ProjectAdmin(admin.ModelAdmin):
 
     list_filter = ['region', 'project_status']
 
-    def project_managers(self, obj):
+    def display_team(self, obj):
         assigned_pms = obj.assigned_employees.all()
         if not assigned_pms:
             return '-'
