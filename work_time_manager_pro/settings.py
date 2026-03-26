@@ -100,6 +100,9 @@ DATABASES = {
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
 AUTH_USER_MODEL = 'accounts.EmployeeUser'
+LOGIN_REDIRECT_URL = 'accounts:employee-list'
+LOGOUT_REDIRECT_URL = 'accounts:login'
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
