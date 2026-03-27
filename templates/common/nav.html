@@ -32,7 +32,8 @@
 <header class="navbar shadow-sm">
     <nav class="d-flex w-100 align-items-center">
         <a href="#" class="nav-btn">Dashboard</a>
-        <a href="#" class="nav-btn">Employees</a>
+        <a href="{% url 'accounts:employee-list' %}" class="nav-btn">Employees</a>
+        <a href="{% url 'clients:clients-list' %}" class="nav-btn">Clients</a>
         <a href="#" class="nav-btn">Projects</a>
         <a href="#" class="nav-btn">Activity</a>
         <a href="#" class="nav-btn">Invoices</a>

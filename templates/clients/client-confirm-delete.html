@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center py-5">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-lg">
+            <div class="card-header bg-danger text-white py-3 text-center">
+                <h4 class="mb-0 fw-bold"><i class="bi bi-exclamation-triangle-fill me-2"></i> Confirm Deletion</h4>
+            </div>
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <p class="fs-5">Are you sure you want to permanently delete <strong>{{ object.name }}</strong>?</p>
+                    <p class="text-muted small">Please review the details below before proceeding.</p>
+                </div>
+
+                <div class="bg-light p-4 rounded border mb-4">
+                    <div class="row g-3">
+                        {% for field in form %}
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-muted">{{ field.label }}</label>
+                            {{ field }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row g-2">
+                        <div class="col-md-8">
+                            <button type="submit" class="btn btn-danger btn-lg w-100 shadow-sm">
+                                <i class="bi bi-trash3 me-1"></i> Confirm and Delete Permanentely
+                            </button>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="{% url 'clients:client-details' object.pk %}" class="btn btn-outline-secondary btn-lg w-100">
+                                Cancel
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer bg-light text-center py-3">
+                <small class="text-danger fw-bold"><i class="bi bi-info-circle me-1"></i> This action cannot be undone.</small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

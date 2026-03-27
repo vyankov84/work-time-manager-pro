@@ -28,11 +28,13 @@
                         <h4 class="mb-0 fw-bold">{{ employee.first_name }} {{ employee.last_name }}</h4>
                         <p class="mb-0 text-light opacity-75">{{ employee.job_title }}</p>
                     </div>
+                    {% if user.is_manager %}
                     <div class="ms-auto">
-                        <a href="#" class="btn btn-sm btn-outline-light">
+                        <a href="{% url "accounts:employee-update" employee.pk %}" class="btn btn-sm btn-outline-light">
                             <i class="bi bi-pencil"></i> Edit Profile
                         </a>
                     </div>
+                    {% endif %}
                 </div>
             </div>
 

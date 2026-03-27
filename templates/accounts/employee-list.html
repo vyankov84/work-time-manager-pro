@@ -4,9 +4,21 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h2 class="fw-bold text-dark mb-0">Employees</h2>
-        <p class="text-muted mb-0">Directory of all registered staff members</p>
+        <p class="text-muted mb-0">Directory of all company members</p>
     </div>
 </div>
+
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3">
+                <div class="text-muted small fw-bold text-uppercase">Total Employees</div>
+                <div class="h3 mb-0 fw-bold">{{ employees.count }}</div>
+            </div>
+        </div>
+    </div>
+
+<hr>
 
 <div class="card shadow-sm border-0">
     <div class="card-body p-0">
@@ -31,7 +43,9 @@
                         <td>
                             <span class="badge bg-light text-dark border">{{ emp.job_title }}</span>
                         </td>
-                        <td>Department</td>
+                        <td>
+                            <span class="badge bg-light text-dark border">{{ emp.department }}</span>
+                        </td>
                         <td class="text-end pe-4">
                             <div class="btn-group shadow-sm" role="group">
                                 <a href="{% url 'accounts:employee-details' emp.pk %}"
@@ -39,16 +53,18 @@
                                    title="View Details">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a href="#"
+                            {% if user.is_manager %}
+                                <a href="{% url "accounts:employee-update" emp.pk %}"
                                    class="btn btn-sm btn-outline-secondary"
                                    title="Edit Employee">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <a href="#"
+                                <a href="{% url 'accounts:employee-delete' emp.pk %}"
                                    class="btn btn-sm btn-outline-danger"
                                    title="Delete Employee">
                                     <i class="bi bi-trash"></i>
                                 </a>
+                            {% endif %}
                             </div>
                         </td>
                     </tr>
@@ -65,4 +81,5 @@
         </div>
     </div>
 </div>
+<hr>
 {% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="d-flex align-items-center mb-4">
+            <a href="{% url 'clients:clients-list' %}" class="btn btn-outline-secondary btn-sm me-3">
+                <i class="bi bi-arrow-left"></i>
+            </a>
+            <h2 class="fw-bold mb-0">Register New Client</h2>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Company Name</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}<div class="text-danger small">{{ form.name.errors }}</div>{% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Contact Person</label>
+                            {{ form.contact_person }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Contact Email</label>
+                            {{ form.contact_email }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Country</label>
+                            {{ form.country }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Phone Number</label>
+                            {{ form.phone_number }}
+                            {% if form.phone_number.errors %}<div class="text-danger small">{{ form.phone_number.errors }}</div>{% endif %}
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold">Contract Date</label>
+                            {{ form.contract_date }}
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Company Logo</label>
+                            <div class="input-group">
+                                {{ form.logo }}
+                            </div>
+                            <div class="form-text text-muted small">Preferably PNG or JPG with transparent background.</div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4 text-light">
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-check-circle me-1"></i> Save Client
+                        </button>
+                        <a href="{% url 'clients:clients-list' %}" class="btn btn-link text-muted">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

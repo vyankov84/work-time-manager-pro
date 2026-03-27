@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="d-flex align-items-center mb-4">
+            <a href="{% url 'clients:client-details' object.pk %}" class="btn btn-outline-secondary btn-sm me-3">
+                <i class="bi bi-arrow-left"></i>
+            </a>
+            <div>
+                <h2 class="fw-bold mb-0">Update Client</h2>
+                <p class="text-muted mb-0 small">Editing profile for <strong>{{ object.name }}</strong></p>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-uppercase">Company Name</label>
+                            {{ form.name }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-uppercase">Contact Person</label>
+                            {{ form.contact_person }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-uppercase">Contact Email</label>
+                            {{ form.contact_email }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-uppercase">Country</label>
+                            {{ form.country }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-uppercase">Phone Number</label>
+                            {{ form.phone_number }}
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-uppercase">Contract Date</label>
+                            {{ form.contract_date }}
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-uppercase">Update Logo</label>
+                            <div class="d-flex align-items-center p-3 bg-light rounded border mb-2">
+                                {% if object.logo %}
+                                    <img src="{{ object.logo.url }}" class="rounded me-3" style="width: 50px; height: 50px; object-fit: contain;">
+                                    <span class="small text-muted">Current file: {{ object.logo.name }}</span>
+                                {% else %}
+                                    <i class="bi bi-image text-secondary me-3 fs-3"></i>
+                                    <span class="small text-muted">No logo uploaded yet.</span>
+                                {% endif %}
+                            </div>
+                            {{ form.logo }}
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-5">
+                        <button type="submit" class="btn btn-primary btn-lg shadow-sm">
+                            <i class="bi bi-save me-1"></i> Save Changes
+                        </button>
+                        <a href="{% url 'clients:client-details' object.pk %}" class="btn btn-link text-muted">Discard Changes</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

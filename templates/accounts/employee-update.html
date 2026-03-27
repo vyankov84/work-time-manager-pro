@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center py-5">
+    <div class="col-lg-7 col-md-9">
+
+        <div class="d-flex align-items-center mb-4">
+            <a href="{% url 'accounts:employee-details' object.pk %}" class="btn btn-outline-secondary btn-sm me-3 shadow-sm">
+                <i class="bi bi-arrow-left"></i>
+            </a>
+            <div>
+                <h2 class="fw-bold mb-0">Update Employee Profile</h2>
+                <p class="text-muted mb-0">Managing details for <strong>{{ object.get_full_name|default:object.username }}</strong></p>
+            </div>
+        </div>
+
+        {% if form.errors %}
+        <div class="alert alert-danger shadow-sm mb-4">
+            <p class="fw-bold mb-1"><i class="bi bi-exclamation-octagon-fill me-2"></i> Please correct the following errors:</p>
+            <ul class="mb-0 small">
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="card shadow border-0 overflow-hidden">
+            <div class="card-body p-4 p-md-5">
+
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted text-uppercase">First Name</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Last Name</label>
+                            {{ form.last_name }}
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-envelope"></i></span>
+                                {{ form.email }}
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Job Title / Role</label>
+                            {{ form.job_title }} </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Department</label>
+                            {{ form.department }}
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Profile Picture</label>
+                            <div class="d-flex align-items-center p-3 bg-light rounded border mb-2">
+                                {% if object.profile_picture %}
+                                    <img src="{{ object.profile_picture.url }}" class="rounded-circle me-3 border shadow-sm" style="width: 60px; height: 60px; object-fit: cover;">
+                                    <div class="small">
+                                        <span class="text-muted d-block">Current file:</span>
+                                        <span class="text-truncate d-inline-block" style="max-width: 200px;">{{ object.profile_picture.name }}</span>
+                                    </div>
+                                {% else %}
+                                    <div class="bg-secondary text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                        <i class="bi bi-person fs-2"></i>
+                                    </div>
+                                    <span class="small text-muted">No photo uploaded yet.</span>
+                                {% endif %}
+                            </div>
+                            {{ form.profile_picture }}
+                        </div>
+
+                        <div class="col-12">
+                            <div class="p-3 border rounded bg-light-subtle shadow-sm">
+                                <div class="form-check form-switch">
+                                    {{ form.is_manager }}
+                                    <label class="form-check-label fw-bold ms-2" for="{{ form.is_manager.id_for_label }}">
+                                        Manager
+                                    </label>
+                                </div>
+                                <small class="text-muted d-block mt-1 ms-4 ps-2">Managers can create projects, add employees, and manage clients.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-5 opacity-25">
+
+                    <div class="row g-2">
+                        <div class="col-md-8">
+                            <button type="submit" class="btn btn-primary btn-lg w-100 shadow">
+                                <i class="bi bi-cloud-arrow-up-fill me-2"></i> Save Changes
+                            </button>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="{% url 'accounts:employee-details' object.pk %}" class="btn btn-outline-secondary btn-lg w-100">
+                                Cancel
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <p class="text-muted small">Employee record updated by system administrator.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
