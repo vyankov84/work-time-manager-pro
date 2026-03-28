@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8"> <div class="d-flex align-items-center mb-4">
+            <a href="{% url 'projects:projects-list' %}" class="btn btn-outline-secondary btn-sm me-3">
+                <i class="bi bi-arrow-left"></i>
+            </a>
+            <h2 class="fw-bold mb-0">Register New Project</h2>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4 p-md-5">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-uppercase text-muted">Project Name</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}<div class="text-danger small">{{ form.name.errors|striptags }}</div>{% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-uppercase text-muted">Job Number</label>
+                            {{ form.job_number }}
+                            {% if form.job_number.errors %}<div class="text-danger small">{{ form.job_number.errors|striptags }}</div>{% endif %}
+                            <div class="form-text small text-info">{{ form.job_number.help_text }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-uppercase text-muted">Region</label>
+                            {{ form.region }}
+                            {% if form.region.errors %}<div class="text-danger small">{{ form.region.errors|striptags }}</div>{% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-uppercase text-muted">Project Status</label>
+                            {{ form.project_status }}
+                            {% if form.project_status.errors %}
+                                <div class="text-danger small">{{ form.project_status.errors|striptags }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-uppercase text-muted">Client</label>
+                            {{ form.client }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-uppercase text-muted">Project Manager</label>
+                            {{ form.project_manager }}
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small text-uppercase text-muted">Total Budget</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                {{ form.total_budget }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small text-uppercase text-muted">Hourly Rate</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                {{ form.hourly_rate }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small text-uppercase text-muted">Estimated Hours</label>
+                            {{ form.estimated_hours }}
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-uppercase text-muted">Description</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}<div class="text-danger small">{{ form.description.errors|striptags }}</div>{% endif %}
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-uppercase text-muted">Assign Team Members</label>
+                            {{ form.assigned_employees }}
+                            <div class="form-text small text-muted">Hold down "Control" (or "Command" on Mac) to select more than one.</div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4 text-light">
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'projects:projects-list' %}" class="btn btn-link text-muted me-md-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary btn-lg px-5">
+                            <i class="bi bi-check-circle me-1"></i> Create Project
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
