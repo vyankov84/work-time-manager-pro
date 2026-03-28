@@ -55,6 +55,9 @@ class Activity(models.Model):
     def clean(self):
         super().clean()
 
+        if not hasattr(self, 'employee') or self.employee is None:
+            return
+
         if self.project.project_status != ProjectStatus.ACTIVE:
             raise ValidationError(
                 f'The project {self.project.name} is currently {self.project.project_status}. '
