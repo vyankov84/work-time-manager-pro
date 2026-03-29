@@ -87,15 +87,14 @@ class Project(models.Model):
             total=Sum('hours_worked')
         )
         return data['total'] or 0
-        # return 0
 
     @property
     def progress_percentage(self):
         if self.estimated_hours > 0:
-            percentages = (self.total_hours_worked / self.estimated_hours) * 100
-            return f'{min(percentages, 100):.2f}'
-        return '0.00%'
-        # return 0
+            percentage = (float(self.total_hours_worked) / self.estimated_hours) * 100
+            return round(min(percentage, 100), 2)
+        return 0
+
 
     @property
     def total_earned(self):

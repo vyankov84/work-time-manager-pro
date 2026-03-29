@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
 <div class="row justify-content-center py-5">
     <div class="col-lg-8">
         <div class="card border-0 shadow-lg">
@@ -9,7 +10,7 @@
             </div>
             <div class="card-body p-4">
                 <div class="text-center mb-4">
-                    <p class="fs-5">Are you sure you want to permanently delete <strong>{{ object.name }}</strong>?</p>
+                    <p class="fs-5">Are you sure you want to permanently delete <strong>{{ object.task_name }}</strong>?</p>
                     <p class="text-muted small">Please review the details below before proceeding.</p>
                 </div>
 
@@ -33,7 +34,7 @@
                             </button>
                         </div>
                         <div class="col-md-4">
-                            <a href="{% url 'clients:client-details' object.pk %}" class="btn btn-outline-secondary btn-lg w-100">
+                            <a href="{% url 'activities:activities-list' %}" class="btn btn-outline-secondary btn-lg w-100">
                                 Cancel
                             </a>
                         </div>
@@ -46,4 +47,5 @@
         </div>
     </div>
 </div>
+
 {% endblock %}

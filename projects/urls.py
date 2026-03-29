@@ -4,7 +4,8 @@ from projects import views
 app_name = 'projects'
 
 urlpatterns = [
-    path('', views.ProjectListView.as_view(), name='projects-list'),
+    path('', views.DashboardView.as_view(), name='dashboard'),
+    path('projects/', views.ProjectListView.as_view(), name='projects-list'),
     path('create/', views.ProjectCreateView.as_view(), name='project-create'),
     path('<int:pk>/', include([
         path('details/', views.ProjectDetailView.as_view(), name='project-details'),

@@ -5,19 +5,63 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold text-dark mb-0">Work Logs</h2>
-            <p class="text-muted mb-0">Tracked time and activities.</p>
+            <p class="text-muted mb-0 small text-uppercase tracking-wider">Tracked time and project activities</p>
         </div>
-
-        <a href="{% url 'activities:activity-add' %}" class="btn btn-primary shadow-sm">
-            <i class="bi bi-clock-history me-1"></i> Log New Activity
+        <a href="{% url 'activities:activity-add' %}" class="btn btn-primary shadow-sm px-4">
+            <i class="bi bi-plus-lg me-1"></i> Log New Activity
         </a>
     </div>
 
-    <div class="row g-3 mb-4">
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm p-3 border-start border-primary border-4">
-                <div class="text-muted small fw-bold text-uppercase">Hours in this view</div>
-                <div class="h3 mb-0 fw-bold text-primary">{{ total_hours }}h</div>
+    <div class="row g-4 mb-4">
+        <div class="col-lg-3">
+            <div class="card border-0 shadow-sm h-100 bg-primary text-white">
+                <div class="card-body p-4 d-flex flex-column justify-content-center">
+                    <div class="small fw-bold text-uppercase opacity-75 mb-1">Total Hours Found</div>
+                    <div class="display-5 fw-bold">{{ total_hours|default:"0" }}h</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-9">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <form method="get" class="row g-3 align-items-end">
+                        <div class="col-md-5">
+                            <label class="form-label small fw-bold text-muted text-uppercase">Filter by Project</label>
+                            <select name="project" class="form-select border-light-subtle shadow-none">
+                                <option value="">All Active Projects</option>
+                                {% for p in all_projects %}
+                                <option value="{{ p.id }}" {% if request.GET.project == p.id|stringformat:"i" %}selected{% endif %}>
+                                    {{ p.name }} ({{ p.job_number }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        {% if user.is_manager %}
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-muted text-uppercase">Filter by Employee</label>
+                            <select name="employee" class="form-select border-light-subtle shadow-none">
+                                <option value="">All Team Members</option>
+                                {% for emp in all_employee %}
+                                <option value="{{ emp.id }}" {% if request.GET.employee == emp.id|stringformat:"i" %}selected{% endif %}>
+                                    {{ emp.get_full_name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% endif %}
+
+                        <div class="{% if user.is_manager %}col-md-3{% else %}col-md-7{% endif %} d-flex gap-2">
+                            <button type="submit" class="btn btn-dark w-100">
+                                <i class="bi bi-funnel"></i> Apply
+                            </button>
+                            <a href="{% url 'activities:activities-list' %}" class="btn btn-outline-secondary" title="Reset Filters">
+                                <i class="bi bi-arrow-counterclockwise"></i>
+                            </a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -26,59 +70,75 @@
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
-                        <tr>
+                    <thead class="bg-light">
+                        <tr class="text-uppercase small fw-bold text-muted">
                             <th class="ps-4 py-3">Date</th>
                             {% if user.is_manager %}<th>Employee</th>{% endif %}
                             <th>Project</th>
-                            <th>Task / Description</th>
+                            <th>Task & Description</th>
                             <th class="text-center">Hours</th>
                             <th class="text-end pe-4">Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="border-top-0">
                         {% for activity in activities %}
                         <tr>
                             <td class="ps-4">
                                 <div class="fw-bold text-dark">{{ activity.date|date:"D, d M Y" }}</div>
-                                <div class="small text-muted text-uppercase" style="font-size: 0.7rem;">Logged: {{ activity.created_at|date:"H:i" }}</div>
+                                <div class="small text-muted" style="font-size: 0.75rem;">Created: {{ activity.created_at|date:"H:i" }}</div>
                             </td>
+
                             {% if user.is_manager %}
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <div class="rounded-circle bg-info-subtle text-info d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; font-size: 0.8rem;">
+                                    <div class="rounded-circle bg-secondary-subtle text-secondary d-flex align-items-center justify-content-center me-2 fw-bold" style="width: 32px; height: 32px; font-size: 0.7rem;">
                                         {{ activity.employee.first_name|first }}{{ activity.employee.last_name|first }}
                                     </div>
                                     <span class="small fw-semibold">{{ activity.employee.get_full_name }}</span>
                                 </div>
                             </td>
                             {% endif %}
+
                             <td>
-                                <span class="badge bg-light text-dark border">{{ activity.project.name }}</span>
+                                <span class="badge rounded-pill bg-light text-dark border px-3">
+                                    {{ activity.project.name }}
+                                </span>
                             </td>
+
                             <td>
                                 <div class="fw-bold text-dark">{{ activity.task_name }}</div>
-                                <div class="small text-muted text-truncate" style="max-width: 250px;">{{ activity.description|default:"No description" }}</div>
-                            </td>
-                            <td class="text-center">
-                                <span class="h6 mb-0 fw-bold">{{ activity.hours_worked }}</span>
-                            </td>
-                            <td class="text-end pe-4">
-                                <div class="btn-group">
-                                    <a href="#" class="btn btn-sm btn-outline-secondary" title="Edit Log">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-sm btn-outline-danger" title="Delete Log">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
+                                {% if activity.description %}
+                                <div class="small text-muted text-truncate" style="max-width: 300px;" title="{{ activity.description }}">
+                                    {{ activity.description }}
                                 </div>
+                                {% endif %}
+                            </td>
+
+                            <td class="text-center">
+                                <span class="badge bg-primary-subtle text-primary fs-6 px-3">
+                                    {{ activity.hours_worked }}h
+                                </span>
+                            </td>
+
+                            <td class="text-end pe-4">
+                                <a href="{% url 'activities:activity-update' activity.pk %}" class="btn btn-sm btn-link text-muted p-0 me-2">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+
+                                <a href="{% url 'activities:activity-delete' activity.pk %}" class="btn btn-sm btn-link text-danger p-0">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="6" class="text-center py-5 text-muted">
-                                <i class="bi bi-calendar-x fs-1 d-block mb-2"></i>
-                                <p>No activities logged yet.</p>
+                            <td colspan="6" class="text-center py-5">
+                                <div class="text-muted">
+                                    <i class="bi bi-clipboard-x display-4 d-block mb-3"></i>
+                                    <p class="h5">No activity logs found</p>
+                                    <p class="small">Try adjusting your filters or log a new activity.</p>
+                                </div>
                             </td>
                         </tr>
                         {% endfor %}
@@ -86,6 +146,24 @@
                 </table>
             </div>
         </div>
+
+        {% if is_paginated %}
+        <div class="card-footer bg-white border-top-0 py-3">
+            <nav>
+                <ul class="pagination pagination-sm justify-content-center mb-0">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link shadow-none" href="?page={{ page_obj.previous_page_number }}{% if request.GET.project %}&project={{ request.GET.project }}{% endif %}{% if request.GET.employee %}&employee={{ request.GET.employee }}{% endif %}">Previous</a></li>
+                    {% endif %}
+
+                    <li class="page-item active"><span class="page-link">Page {{ page_obj.number }} of {{ paginator.num_pages }}</span></li>
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link shadow-none" href="?page={{ page_obj.next_page_number }}{% if request.GET.project %}&project={{ request.GET.project }}{% endif %}{% if request.GET.employee %}&employee={{ request.GET.employee }}{% endif %}">Next</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

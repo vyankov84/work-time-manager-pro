@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="d-flex align-items-center mb-4">
+            <a href="{% url 'activities:activities-list' %}" class="btn btn-outline-secondary btn-sm me-3">
+                <i class="bi bi-arrow-left"></i>
+            </a>
+            <h2 class="fw-bold mb-0">Edit Activity Log</h2>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4 p-md-5">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors|striptags }}
+                        </div>
+                    {% endif %}
+
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-uppercase text-muted">Project</label>
+                            {{ form.project }}
+                            {% if form.project.errors %}<div class="text-danger small">{{ form.project.errors }}</div>{% endif %}
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-uppercase text-muted">Task Name / Summary</label>
+                            {{ form.task_name }}
+                            {% if form.task_name.errors %}<div class="text-danger small">{{ form.task_name.errors }}</div>{% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-uppercase text-muted">Date of Work</label>
+                            {{ form.date }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-uppercase text-muted">Hours Spent</label>
+                            {{ form.hours_worked }}
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-uppercase text-muted">Detailed Description</label>
+                            {{ form.description }}
+                        </div>
+                    </div>
+
+                    <hr class="my-4 text-light">
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'activities:activities-list' %}" class="btn btn-link text-muted me-md-2">Cancel</a>
+                        <button type="submit" class="btn btn-warning btn-lg px-5">
+                            <i class="bi bi-pencil-square me-1"></i> Update Log
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

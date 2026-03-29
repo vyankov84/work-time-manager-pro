@@ -1,6 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, DeleteView, DetailView, UpdateView
+from django.views.generic import CreateView, ListView, DeleteView, DetailView, UpdateView, TemplateView
+
+from accounts.models import EmployeeUser
+from activities.models import Activity
 from projects.forms import ProjectCreateForm
 from projects.models import Project
 
@@ -59,3 +62,25 @@ class ProjectDetailView(LoginRequiredMixin, DetailView):
     model = Project
     context_object_name = 'project'
     template_name = 'projects/project-details.html'
+
+
+class DashboardView(LoginRequiredMixin, TemplateView):
+    template_name = 'projects/dashboard.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['total_projects'] = Project.objects.count()
+        context['total_employees'] = EmployeeUser.objects.count()
+
+        context['recent_activities'] = Activity.objects.select_related(
+            'employee', 'project'
+        ).order_by('-date', '-created_at')[:5]
+
+        context['projects_overview'] = Project.objects.filter(
+            project_status='ACTIVE'
+        ).order_by('-created_at')[:8]
+
+        context['page_title'] = 'Dashboard'
+
+        return context

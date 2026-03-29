@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4 align-items-center">
+    <div class="col-md-6">
+        <h2 class="fw-bold text-dark mb-0">System Overview</h2>
+        <p class="text-muted small mb-0">Real-time project tracking and resources</p>
+    </div>
+    <div class="col-md-6 text-md-end">
+        <span class="badge bg-light text-dark border p-2">
+            <i class="bi bi-calendar3 me-1"></i> Today: {% now "d M Y" %}
+        </span>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm bg-primary text-white p-3 h-100">
+            <div class="d-flex align-items-center">
+                <div class="bg-white bg-opacity-25 rounded p-3 me-3">
+                    <i class="bi bi-briefcase fs-3"></i>
+                </div>
+                <div>
+                    <h4 class="mb-0 fw-bold">{{ total_projects }}</h4>
+                    <small class="opacity-75">Total Projects</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm bg-success text-white p-3 h-100">
+            <div class="d-flex align-items-center">
+                <div class="bg-white bg-opacity-25 rounded p-3 me-3">
+                    <i class="bi bi-people fs-3"></i>
+                </div>
+                <div>
+                    <h4 class="mb-0 fw-bold">{{ total_employees }}</h4>
+                    <small class="opacity-75">Employees</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-bold">Active Projects Progress</h5>
+                <a href="{% url 'projects:projects-list' %}" class="btn btn-sm btn-outline-primary border-0">See all</a>
+            </div>
+            <div class="card-body">
+                {% for project in projects_overview %}
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="small fw-bold">{{ project.name }}</span>
+                        <span class="small text-muted">
+                            {{ project.total_hours_worked }} / {{ project.estimated_hours }} hrs ({{ project.progress_percentage }}%)
+                        </span>
+                    </div>
+                    <div class="progress" style="height: 12px; border-radius: 6px;">
+                        <div class="progress-bar {% if project.progress_percentage > 90 %}bg-danger{% elif project.progress_percentage > 70 %}bg-warning{% else %}bg-info{% endif %}"
+                             role="progressbar"
+                             style="width: {{ project.progress_percentage }}%;"
+                             aria-valuenow="{{ project.progress_percentage }}" aria-valuemin="0" aria-valuemax="100">
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-center text-muted my-5">No active projects to display.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white border-0 py-3">
+                <h5 class="mb-0 fw-bold">Recent Activities</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    {% for act in recent_activities %}
+                    <div class="list-group-item py-3 border-start border-4 border-primary-subtle">
+                        <div class="d-flex w-100 justify-content-between align-items-start">
+                            <h6 class="mb-1 fw-bold text-dark">{{ act.employee.get_full_name }}</h6>
+                            <small class="text-muted">{{ act.date|date:"d M" }}</small>
+                        </div>
+                        <p class="mb-1 small text-muted text-truncate">{{ act.task_name }}</p>
+                        <div class="d-flex align-items-center mt-2">
+                            <span class="badge bg-primary-subtle text-primary me-2">
+                                <i class="bi bi-clock me-1"></i>{{ act.hours_worked }}h
+                            </span>
+                            <small class="text-muted italic">on {{ act.project.name }}</small>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-center py-5 text-muted italic">No recent logs found</div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="card-footer bg-white border-0 text-center py-3">
+                <a href="{% url 'activities:activities-list' %}" class="small fw-bold text-decoration-none">View full history</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
