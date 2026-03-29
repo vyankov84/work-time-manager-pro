@@ -36,7 +36,11 @@
         <a href="{% url 'clients:clients-list' %}" class="nav-btn">Clients</a>
         <a href="{% url 'projects:projects-list' %}" class="nav-btn">Projects</a>
         <a href="{% url 'activities:activities-list' %}" class="nav-btn">Activity</a>
-        <a href="#" class="nav-btn">Invoices</a>
+        <a href="{% url 'invoices:invoices-list' %}" class="nav-btn">Invoices</a>
+
+        <a href="{% url 'invoices:api-invoice-list' %}" class="nav-btn text-info border border-info border-opacity-25 ms-2" target="_blank">
+            <i class="bi bi-code-square me-1"></i> Invoices API
+        </a>
 
         <div class="ms-auto d-flex align-items-center gap-2">
             {% if user.is_authenticated %}

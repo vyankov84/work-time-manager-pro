@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-danger text-white py-3">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-exclamation-triangle me-2"></i> Confirm Deletion</h5>
+            </div>
+            <div class="card-body p-4 text-center">
+                <p class="lead mb-4">Are you sure you want to delete invoice <strong>{{ object.invoice_number }}</strong>?</p>
+
+                <div class="text-start bg-light p-3 rounded mb-4">
+                    {% for field in form %}
+                    <div class="mb-2">
+                        <label class="small fw-bold text-muted">{{ field.label }}</label>
+                        {{ field }}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                        <a href="{% url 'invoices:invoice-details' object.pk %}" class="btn btn-light px-4">Cancel</a>
+                        <button type="submit" class="btn btn-danger px-4">Confirm Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
