@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container text-center py-5">
+    <h1 class="display-1 fw-bold text-primary">404</h1>
+    <p class="fs-3"> <span class="text-danger">OOPS!</span> The page was not found</p>
+    <p class="lead">
+        It seems that the address you are looking for does not exist or has been moved
+    </p>
+    <a href="{% url 'invoices:invoices-list' %}" class="btn btn-primary shadow">Back home</a>
+</div>
+{% endblock %}

@@ -1,10 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from activities.models import Activity
 from invoices.forms import InvoiceCreateForm
 from invoices.models import Invoice
+from invoices.tasks import send_invoice_notification_email
+from decimal import Decimal
 
 
 class InvoiceListView(LoginRequiredMixin, ListView):
@@ -32,17 +35,32 @@ class InvoiceCreateView(LoginRequiredMixin, UserPassesTestMixin,CreateView):
         return self.request.user.is_manager
 
     def form_valid(self, form):
-        response = super().form_valid(form)
-        invoice = self.object
+
+        invoice = form.save(commit=False)
+        invoice.client = invoice.project.client
+        invoice.save()
+
+        self.object = invoice
 
         activities = Activity.objects.filter(project=invoice.project, invoiced_in__isnull=True)
         invoice.activities.set(activities)
 
-        total_hours = sum(act.hours_worked for act in activities)
-        invoice.total_amount = total_hours * invoice.project.hourly_rate
+        total_hours = sum(Decimal(str(act.hours_worked)) for act in activities)
+        rate = Decimal(str(invoice.project.hourly_rate or 0))
+        invoice.total_amount = total_hours * rate
+
         invoice.save()
 
-        return response
+        for activity in activities:
+            activity.invoiced_in.add(invoice)
+
+        send_invoice_notification_email.delay(
+            invoice.invoice_number,
+            "{:.2f}".format(invoice.total_amount),
+            invoice.client.contact_email
+        )
+
+        return HttpResponseRedirect(self.get_success_url())
 
 
 
@@ -75,7 +93,7 @@ class InvoiceUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 class InvoiceDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Invoice
     template_name = 'invoices/invoice-delete.html'
-    success_url = reverse_lazy('invoices:invoice-list')
+    success_url = reverse_lazy('invoices:invoices-list')
 
     raise_exception = True
     def test_func(self):

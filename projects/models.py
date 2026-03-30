@@ -99,7 +99,7 @@ class Project(models.Model):
     @property
     def total_earned(self):
         return self.hourly_rate * self.total_hours_worked
-        # return 0
+
 
     def clean(self):
         super().clean()
